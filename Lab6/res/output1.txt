@@ -1,0 +1,199 @@
+Insert DEC:
+©¸©¤©¤DEC
+
+Insert JAN:
+©¸©¤©¤DEC
+    ©¸©¤©¤JAN
+
+Insert APR:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤JAN
+
+Insert MAR:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤JAN
+        ©¸©¤©¤MAR
+
+Insert JUL:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤JAN
+        ©¸©¤©¤MAR
+            ©À©¤©¤JUL
+Perform RL Rotation at: JAN
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        ©¸©¤©¤MAR
+
+Insert AUG:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        ©¸©¤©¤MAR
+
+Insert OCT:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        ©¸©¤©¤MAR
+            ©¸©¤©¤OCT
+
+Insert FEB:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        |   ©À©¤©¤FEB
+        ©¸©¤©¤MAR
+            ©¸©¤©¤OCT
+
+Insert NOV:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        |   ©À©¤©¤FEB
+        ©¸©¤©¤MAR
+            ©¸©¤©¤OCT
+                ©À©¤©¤NOV
+Perform RL Rotation at: MAR
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        |   ©À©¤©¤FEB
+        ©¸©¤©¤NOV
+            ©À©¤©¤MAR
+            ©¸©¤©¤OCT
+
+Insert MAY:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        |   ©À©¤©¤FEB
+        ©¸©¤©¤NOV
+            ©À©¤©¤MAR
+            |   ©¸©¤©¤MAY
+            ©¸©¤©¤OCT
+Perform RR Rotation at: DEC
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    |       ©À©¤©¤FEB
+    ©¸©¤©¤NOV
+        ©À©¤©¤MAR
+        |   ©¸©¤©¤MAY
+        ©¸©¤©¤OCT
+
+Insert JUN:
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    |       ©À©¤©¤FEB
+    ©¸©¤©¤NOV
+        ©À©¤©¤MAR
+        |   ©À©¤©¤JUN
+        |   ©¸©¤©¤MAY
+        ©¸©¤©¤OCT
+
+Remove JUN:
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    |       ©À©¤©¤FEB
+    ©¸©¤©¤NOV
+        ©À©¤©¤MAR
+        |   ©¸©¤©¤MAY
+        ©¸©¤©¤OCT
+
+Remove MAY:
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    |       ©À©¤©¤FEB
+    ©¸©¤©¤NOV
+        ©À©¤©¤MAR
+        ©¸©¤©¤OCT
+
+Remove NOV:
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    |       ©À©¤©¤FEB
+    ©¸©¤©¤OCT
+        ©À©¤©¤MAR
+
+Remove FEB:
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    ©¸©¤©¤OCT
+        ©À©¤©¤MAR
+
+Remove OCT:
+©¸©¤©¤JUL
+    ©À©¤©¤DEC
+    |   ©À©¤©¤APR
+    |   |   ©¸©¤©¤AUG
+    |   ©¸©¤©¤JAN
+    ©¸©¤©¤MAR
+Perform LL Rotation at: JUL
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    |   ©¸©¤©¤AUG
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        ©¸©¤©¤MAR
+
+Remove AUG:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤JUL
+        ©À©¤©¤JAN
+        ©¸©¤©¤MAR
+
+Remove JUL:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤MAR
+        ©À©¤©¤JAN
+
+Remove MAR:
+©¸©¤©¤DEC
+    ©À©¤©¤APR
+    ©¸©¤©¤JAN
+
+Remove APR:
+©¸©¤©¤DEC
+    ©¸©¤©¤JAN
+
+Remove JAN:
+©¸©¤©¤DEC
+
+Remove DEC:
+

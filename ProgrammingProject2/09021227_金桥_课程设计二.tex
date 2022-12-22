@@ -1,0 +1,617 @@
+\documentclass[a4paper]{ctexart}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{ctable}
+\usepackage{caption}
+\usepackage{pifont}
+\usepackage{enumitem}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage[colorlinks,linkcolor=red]{hyperref}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry} 
+\usepackage{array} 
+%\renewcommand\arraystretch{1.4} 
+\lstset{
+    numbers=left,
+    keywordstyle= \color{ blue!70},
+    commentstyle= \color{red!50!green!50!blue!50},
+    rulesepcolor= \color{ red!20!green!20!blue!20} ,
+    escapeinside=``,
+    numberstyle=\tt,
+    numbersep=0em,
+    xleftmargin=2em,
+    breaklines,
+    aboveskip=1em,
+    framexleftmargin=2em,
+    frame=shadowbox,
+    basicstyle=\tt,
+    language=C++
+}
+\title{数据结构课程设计二实验报告}
+\author{学号：\underline{09021227}\ \ 姓名：\underline{金桥}\ \ 实验类型：\underline{必做}}
+\begin{document}
+\maketitle
+
+\subsection*{1. 问题描述：描述实验内容和要求以及需要解决的问题。\\ \kaishu{提示：结合教师课堂讲授内容，仔细分析实验要求，对实验内容进行需求分析。}}
+
+\noindent \textbf{问题描述：}
+
+· 在ZIP压缩文档中，保留着所有压缩文件和目录的相对路径和名称。
+
+· 当使用WinZIP等软件打开ZIP压缩文档时，可以从这些信息中重建目录的树状结构。
+
+\noindent \textbf{实验要求：}
+
+· 实现目录的树状结构的重建。
+
+· $N$:取值 $1 \sim 100$ ，表示ZIP压缩文档中的文件和目录数量。
+
+\noindent \textbf{输入文件格式：}
+
+第一行：$N$ : 文件和目录的数量
+
+第二行：文件或目录的相对路径和名称，每行不超过260个字符
+
+\noindent \textbf{输出文件格式：\small{（假设:所有路径都是相对于\texttt{root}目录，每级目录比上一级目录多缩进2个空格）}}
+
+从\texttt{root}开始输出每个目录名称
+
+\hspace*{2em} 按字典序输出所有子目录
+
+\hspace*{2em} \hspace*{2em} 按字典序输出所有文件
+
+\noindent \textbf{注意：}
+
+· 文件名称与目录名称，可能存在重名，必须进行区分。
+
+· 路径名称与文件名称，仅包括英文字母，且字母区分大小写。
+
+· 符号‘\textbackslash’仅作为路径分隔符,且目录以‘\textbackslash’结束。
+
+· 不存在重复的输入值。
+
+· 每个文件名后一对“()”内的值，为该文件的大小。
+
+\subsection*{2. 算法思想：详细描述解决相应问题所需要的算法设计思想。}
+
+采用\textbf{树状数据结构}实现，目录作为父节点，目录下的文件夹以及文件作为子节点。
+
+单个节点存放节点名称，结点类型（文件夹/文件），以及子节点指针。
+
+添加节点时，依此访问其父节点，若其父节点不存在则创建其父节点。创建叶子节点时注意判别是否重复。
+
+在打印之前对所有节点的子节点指针序列进行字典序排序。最后进行输出。
+
+树内部的函数大部分采用递归方式实现。
+
+除此以外，还需要自行实现 \texttt{std::vector std::string std::sort} 的功能，前两者为\textbf{顺序表}，后者为\textbf{冒泡排序}。
+
+\newpage
+\subsection*{3. 功能函数：描述所设计的功能函数。如果有多个函数，需要描述它们之间的关系。}
+
+\noindent {\large\textbf{\texttt{MyVec} 类：}}
+
+\noindent \textbf{\texttt{MyVec} ：默认构造函数，生成一个空的 \texttt{MyVec}}.
+
+\begin{lstlisting}
+    /**
+    *  @brief MyVec object constructor
+    */
+   MyVec();
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{MyVec} ：给定另一个数组的开始位置与结束位置生成对应的 \texttt{MyVec}}
+
+通过传入指向开始元素的指针\texttt{begin}与指向末尾元素的下一个位置的指针\texttt{end}构建\texttt{MyVec}.
+
+\begin{lstlisting}
+    /**
+     *  @brief MyVec object constructor, copy from begin to end
+     *  @param begin - begin position
+     *  @param end   - end position
+     */
+    MyVec(DT* begin, DT* end);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{MyVec} ：拷贝构造函数}
+
+\begin{lstlisting}
+    /**
+     *  @brief MyVec object copy constructor
+     *  @param vec - copy vector
+     */
+    MyVec(const MyVec<DT>& vec);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{\textasciitilde MyVec} ：析构函数}
+
+\begin{lstlisting}
+    /**
+     *  @brief MyVec object destructor
+     */
+    ~MyVec();
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{operator[]} ：获取下标 $n$ 的元素}
+
+\begin{lstlisting}
+    DT& operator[](int n);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{pushBack} ：向尾部插入新元素}
+
+\begin{lstlisting}
+    /**
+     *  @brief push element to the end of vector
+     *  @param element - data to be pushed
+     */
+    void pushBack(const DT& element);
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{sort} ：按给定方式排列所有元素}
+
+传入比较函数，按照比较函数进行排序，类似于 \texttt{std::sort} 函数的第三个参数。
+
+\begin{lstlisting}
+    /**
+     *  @brief bubble sort
+     *  @param fun - sort order
+     */
+    void sort(bool(*fun)(DT, DT));
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{begin} ：获取指向首个元素的指针}
+
+\begin{lstlisting}
+    /**
+     *  @brief  Return iterator to beginning
+     *  @retval  - iterator to beginning
+     */
+    DT* begin() const;
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{end} ：获取指向最后一个元素的下一个位置的指针}
+
+\begin{lstlisting}
+    /**
+     *  @brief  Return iterator to end
+     *  @retval  - iterator to end
+     */
+    DT* end() const;
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{size} ：获取\texttt{MyVec}大小}
+
+\begin{lstlisting}
+    /**
+     *  @brief  Return size
+     *  @retval  - size of vector
+     */
+    int size() const;
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent {\large\textbf{\texttt{MyStr} 类：}}
+
+\noindent \textbf{\texttt{MyStr} ：默认构造函数，生成一个空的 \texttt{MyStr}}.
+
+\begin{lstlisting}
+    /**
+    *  @brief MyStr object constructor
+    */
+   MyStr::MyStr();
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{MyStr} ：通过字符串常量构建 \texttt{MyStr}}.
+
+\begin{lstlisting}
+    /**
+    *  @brief MyStr object constructor
+    *  @param c - string constant. eg. "str"
+    */
+   MyStr::MyStr(const char* c);
+\end{lstlisting}
+
+\vspace{3em}
+
+
+\noindent \textbf{\texttt{MyStr} ：拷贝构造函数}.
+
+\begin{lstlisting}
+    /**
+    *  @brief MyStr copy constructor
+    *  @param s - copy string
+    */
+   MyStr::MyStr(const MyStr& s);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{\textasciitilde MyStr} ：析构函数}.
+
+\begin{lstlisting}
+    /**
+    *  @brief MyStr object destructor
+    */
+   MyStr::~MyStr()
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{operator[]} ：获取字符串第 $n$ 个字符}
+
+\begin{lstlisting}
+    char& MyStr::operator[](int n);
+\end{lstlisting}
+
+\newpage
+
+\noindent \textbf{\texttt{substr} ：获取字符串 \texttt{[start, start+offset)} 位置的字串}
+
+类似于 \texttt{std::string} 的 \texttt{substr} 函数。 例如 "abcde" 的 \texttt{substr(0, 3)} 就是 "abc"
+
+\begin{lstlisting}
+    /**
+    *  @brief  get substring from [start, start + offset)
+    *  @param  start  - start position
+    *  @param  offset - substring length
+    *  @retval        - substring
+    */
+   MyStr MyStr::substr(int start, int offset) const;
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{length} ：获取字符串长度}
+
+\begin{lstlisting}
+    /**
+    *  @brief  get length
+    *  @retval int - length
+    */
+   int MyStr::length() const
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{operators} ：重载的运算符函数，与 \texttt{std::string} 的运算符行为一致}
+
+\begin{lstlisting}
+    friend std::istream& operator>>(std::istream&, MyStr&);
+    friend std::ostream& operator<<(std::ostream&, const MyStr&);
+    friend MyStr operator+(const MyStr&, const MyStr&);
+    friend bool operator==(const MyStr&, const MyStr&);
+    friend bool operator<(const MyStr&, const MyStr&);
+    friend bool operator>(const MyStr&, const MyStr&);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent {\large\textbf{\texttt{FileTreeNode} 类：}}
+
+\noindent \textbf{\texttt{FileTreeNode} ：构造函数，给定节点名称与是否为文件夹}.
+
+\begin{lstlisting}
+    /**
+    *  @brief FileTreeNode object constructor
+    *  @param name     - node name
+    *  @param isFolder - true: node is a folder
+    */
+   FileTreeNode::FileTreeNode(MyStr name, bool isFolder);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{\textasciitilde FileTreeNode} ：析构函数}.
+
+\begin{lstlisting}
+    /**
+     *  @brief FileTreeNode object destructor
+     */
+    FileTreeNode::~FileTreeNode();
+\end{lstlisting}
+
+\vspace{2.5em}
+
+\noindent \textbf{\texttt{getName} ：获取节点名称}.
+
+\begin{lstlisting}
+    /**
+    *  @brief  get node's name
+    *  @retval  - node's name
+    */
+   MyStr FileTreeNode::getName() const;
+\end{lstlisting}
+
+\vspace{2.5em}
+
+\noindent {\large\textbf{\texttt{FileTree} 类：}}
+
+\noindent \textbf{\texttt{FileTree} ：构造函数，构造一颗空的 \texttt{FileTree} 树}.
+
+\begin{lstlisting}
+    /**
+    *  @brief FileTree object constructor
+    */
+   FileTree::FileTree();
+\end{lstlisting}
+
+\vspace{2.5em}
+
+\noindent \textbf{\texttt{\textasciitilde FileTree} ：析构函数}.
+
+通过调用 \texttt{destructRecursion} 递归析构整棵树。
+
+\begin{lstlisting}
+    /**
+    *  @brief FileTree object destructor
+    */
+   FileTree::~FileTree();
+\end{lstlisting}
+
+\vspace{2.5em}
+
+\noindent \textbf{\texttt{destructRecursion} ：递归析构函数}.
+
+传入当前要析构的子树根节点\texttt{node}进行析构。
+
+\begin{lstlisting}
+    /**
+    *  @brief destruct recursion
+    *  @param node - current destructing node
+    */
+   void FileTree::destructRecursion(FileTreeNode* node);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{add} ：通过 \texttt{MyVec} 添加节点}.
+
+将字符串分解为父节点列表\texttt{prefix}，节点名称\texttt{name}，是否为文件夹\texttt{isFolder}，传入\texttt{addNode}函数进行添加。
+
+\begin{lstlisting}
+    /**
+    *  @brief add node to the tree
+    *  @param pth - the path of file/folder
+    */
+   void FileTree::add(MyStr pth);
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{addNode} ：接收上一个函数传来的参数，并添加节点}.
+
+添加节点的入口函数，调用\texttt{addNodeRecursion}完成节点的添加。
+
+\begin{lstlisting}
+    /**
+    *  @brief add node to the tree
+    *  @param prefix   - prefix of path
+    *  @param name     - name of file/folder
+    *  @param isFolder - true: node is a folder
+    */
+   void FileTree::addNode(MyVec<MyStr> prefix, MyStr name, bool isFolder);
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{addNodeRecursion} ：递归添加节点函数}.
+
+\begin{lstlisting}
+    /**
+    *  @brief add node recursion
+    *  @param node     - current node
+    *  @param num      - current pos in prefix
+    *  @param prefix   - prefix of the path
+    *  @param name     - node name
+    *  @param isFolder - true: node is a folder
+    */
+   void FileTree::addNodeRecursion(FileTreeNode* node, int num, MyVec<MyStr> prefix, MyStr name, bool isFolder);
+\end{lstlisting}
+
+\vspace{2em}
+
+\noindent \textbf{\texttt{sortNode} ：对子节点进行排序的入口函数}.
+
+\begin{lstlisting}
+    /**
+    *  @brief sort all node by dict order
+    */
+   void FileTree::sortNode();
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{sortNodeRecursion} ：递归的对每个节点的子节点进行排序}.
+
+\begin{lstlisting}
+    /**
+    *  @brief sort all node recursion
+    *  @param node - current node
+    */
+   void FileTree::sortNodeRecursion(FileTreeNode* node);
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{print} ：打印树的入口函数}.
+
+\begin{lstlisting}
+    /**
+    *  @brief print the tree
+    */
+   void FileTree::print() const
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{printRecursion} ：递归的对每个节点进行打印}.
+
+\begin{lstlisting}
+    /**
+    *  @brief print recursion
+    *  @param prefix - the output prefix
+    *  @param node   - current node
+    *  @param isLast - true: node is the last subnode
+    */
+   void FileTree::printRecursion(MyStr prefix, FileTreeNode* node, bool isLast) const
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{\texttt{getOutput} ：获取输出的字符串}.
+
+如果节点是文件夹则输出时加上下划线。
+\textbf{如果出现乱码请注释掉里面的 \texttt{if} 语句}
+
+\begin{lstlisting}
+    /**
+    *  @brief  get output string of name, if is a folder then give it an underline
+    *  @param  name     - name
+    *  @param  isFolder - true: node is a folder
+    *  @retval          - output string
+    */
+   MyStr FileTree::getOutput(MyStr name, bool isFolder) const;
+\end{lstlisting}
+
+\vspace{3em}
+
+\subsection*{4. 测试数据：设计测试数据，或具体给出测试数据。\\ \kaishu{提示：要求测试数据能全面地测试所设计程序的功能。}}
+测试数据如下：
+
+\noindent \textbf{测试输入数据一：}
+\begin{lstlisting}[numbers=none]
+7
+b(115)
+c\
+ab\cd
+a\bc(798)
+ab\d(161)
+a\d\a(1338)
+a\d\z\    
+\end{lstlisting}
+
+\vspace{3em}
+
+\noindent \textbf{测试输入数据二：}
+\begin{lstlisting}[numbers=none]
+22
+System\Overview(221)
+Abstraction\Notions(183)
+Abstraction\Notions\Definition(1248)
+Abstraction\Notions\Example(252)
+Exercises\
+Basice(1956)
+OODesign\Evolution\Generations\History\Efficient(14)
+OODesign\Evolution\Generations\History\Flexible(11)
+OODesign\Evolution\Generations\History\Available(9)
+System\Requirements(57)
+System\Analysis(233)
+OODesign\Decomposition(204)
+OODesign\Programming\Object(55)
+OODesign\Programming\Programming(48)
+OODesign\Programming\Language(52)
+System\Design(258)
+System\Refinement(137)
+System\Verification(451)
+OODesign\Evolution\Generations\Language\First(19)
+OODesign\Evolution\Generations\Language\Second(20)
+OODesign\Evolution\Generations\Language\Third(13)
+OODesign\Evolution\Generations\Language\Fourth(24) 
+\end{lstlisting}
+
+\subsection*{5. 测试情况：给出程序的测试情况，分析运行结果，显示实验结果截图。}
+
+实验结果截图：
+
+\noindent \textbf{测试输出数据一：}
+\begin{center}
+    \includegraphics[width=0.3\textwidth]{image/result2.jpg}
+\end{center}
+
+\vspace{2em}
+
+\noindent \textbf{测试输出数据二：}
+\begin{center}
+    \includegraphics[width=0.55\textwidth]{image/result.jpg}
+\end{center}
+
+如图，文件夹带有下划线，文件无下划线。与输入内容预期结果一致。
+\textbf{如果出现乱码请注释掉\texttt{FileTree::getOutput}函数里面的 \texttt{if} 语句块！}
+
+\subsection*{6. 实验总结：写出实验过程中遇到的问题，以及问题的解决过程。分析算法的时间复杂度和空间复杂度，总结实验心得体会。}
+
+\noindent \textbf{问题及解决过程：}
+
+实验过程无问题。
+
+\noindent \textbf{算法的时间复杂度分析：}
+
+\texttt{MyVec} 设元素个数为 $n$，则单次添加为 $O(n)$，访问为$O(1)$.
+
+\texttt{MyStr} 设元素个数为 $n$，则 \texttt{substr} 函数复杂度为 $O(n)$.
+
+\texttt{FileTree} 添加单个文件/文件夹：设树的大小为 $N$，则添加时最坏为 $O(N)$，此时树退化为一条链。
+
+\texttt{FileTree} 按字典序排序所有文件/文件夹：设树的大小为 $N$， 使用冒泡排序进行排序，对于一个有 $m$ 子节点的排序时间复杂度为 $O(m^2)$。最坏时树退化为一条链，复杂度为 $O(N^3)$.
+
+\texttt{FileTree} 设树的大小为 $N$，打印树为 $O(N)$.
+
+\noindent \textbf{算法的空间复杂度分析：} 
+
+\texttt{MyVec} 设元素个数为 $n$ 则为 $O(n)$.
+
+\texttt{MyStr} 设字符个数为 $n$ 则为 $O(n)$.
+
+\texttt{FileTree} 设树的大小为 $N$ 则为 $O(N)$.
+
+\noindent \textbf{心得体会：}
+
+感觉 \texttt{MyVec} 单次添加的性能还可以优化，类似于 \texttt{std::vector} 一样倍增容量而不是每次都重新构建。除了 \texttt{iostream} 库以外没有使用任何STL内容。
+
+\subsection*{7. 源代码：给出项目所有源程序清单。\\ \kaishu{建议：源程序中应有充分的注释，例如注释每个函数参数的含义、函数返回值的含义、函数的功能、主要语句段的功能，等等。}}
+
+实验源程序清单：
+
+\hspace*{2em} 1. \texttt{main.cpp}
+
+\hspace*{2em} 2. \texttt{FileTree.h}
+
+\hspace*{2em} 3. \texttt{FileTree.cpp}
+
+\hspace*{2em} 4. \texttt{MyVec.hpp}
+
+\hspace*{2em} 5. \texttt{MyStr.h}
+
+\hspace*{2em} 6. \texttt{MyStr.cpp}
+
+\hspace*{2em} 7. \texttt{input.txt}
+\end{document}
